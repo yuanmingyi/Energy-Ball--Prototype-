@@ -234,9 +234,9 @@ window.onload = function () {
                 }
             },
 
-            isHitable: function () {
-                return this._speedy >= 0 && this.y > TILE_H + 5;
-            },
+            //isHitable: function () {
+            //    return this._speedy >= 0 && this.y > TILE_H + 5;
+            //},
 
             init: function () {
                 this.addComponent("DOM").bind("EnterFrame", function (e) {
@@ -316,13 +316,15 @@ window.onload = function () {
         var startx = c_gameWidth / 2, starty = c_gameHeight / 2;
         var scoreCenter = { x: startx, y: c_gameHeight * 2 / 3 };
         var player = null;
+        var canHit = true;
 
         // create background entities
         createBackgroundEntity("Mouse").bind("Click", function (e) {
             if (e.mouseButton === Crafty.mouseButtons.LEFT && !isPaused() && player !== null) {
                 //console.log("Clicked!");
-                if (player.isHitable()) {
+                if (canHit) {
                     player.changeMove(e.x, e.y);
+                    canHit = false;
                 } else {
                     gameOver();
                 }
@@ -348,6 +350,8 @@ window.onload = function () {
                 lastScore = score.add(1);
                 this.shift(-this._speedx, -this._speedy);
                 this.rebound(0, 1, 0.3);
+                canHit = true;
+
             })
             .onHit(assets.bonus, function () {
                 // bonus, speed up
